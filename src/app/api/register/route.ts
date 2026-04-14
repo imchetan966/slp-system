@@ -35,14 +35,14 @@ export async function POST(req: NextRequest) {
       const buffer = Buffer.from(bytes);
 
       const fileName = `${Date.now()}-${photoFile.name}`;
-      const filePath = path.join(process.cwd(), "public/uploads", fileName);
+      const filePath = path.join("/tmp", fileName);
 
       // folder ensure
       fs.mkdirSync(path.dirname(filePath), { recursive: true });
 
       fs.writeFileSync(filePath, buffer);
 
-      photoUrl = `/uploads/${fileName}`;
+      photoUrl = fileName; // temporary name, approval ke time pe public folder me move karenge
     }
 
     // ✅ reference id

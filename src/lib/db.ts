@@ -4,16 +4,20 @@ import path from "path";
 const filePath = path.join(process.cwd(), "src/data/registrations.json");
 
 export function saveRegistration(data: any) {
-  let existing = [];
+  try {
+    let existing = [];
 
-  if (fs.existsSync(filePath)) {
-    const file = fs.readFileSync(filePath, "utf-8");
-    existing = JSON.parse(file || "[]");
+    if (fs.existsSync(filePath)) {
+      const file = fs.readFileSync(filePath, "utf-8");
+      existing = JSON.parse(file || "[]");
+    }
+
+    existing.push(data);
+
+    fs.writeFileSync(filePath, JSON.stringify(existing, null, 2));
+  } catch (err) {
+    console.log("❌ DB ERROR:", err);
   }
-
-  existing.push(data);
-
-  fs.writeFileSync(filePath, JSON.stringify(existing, null, 2));
 }
 
 export function getRegistrationByRef(ref: string) {

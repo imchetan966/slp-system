@@ -33,16 +33,17 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: false, message: "No ref" });
   }
 
-  const data = await getRegistrationByRef(ref) as RegistrationData;
+const data = await getRegistrationByRef(ref);
 
-  if (!data) {
-    return NextResponse.json({ success: false, message: "Not found" });
-  }
+if (!data) {
+  return NextResponse.json({ success: false, message: "Not found" });
+}
 
+const reg = data as unknown as RegistrationData;
   // ✅ Update status
 await updateRegistrationStatus(ref, "approved");
   // 📄 Generate PDF
-  const pdfPath = await generateReceiptPDF(data, ref);
+  const pdfPath = await generateReceiptPDF(reg, ref);
 
   // 📧 Send Email
   await sendEmail(pdfPath, ref);
@@ -70,7 +71,7 @@ await updateRegistrationStatus(ref, "approved");
 
 // ✅ PDF FUNCTION
 async function generateReceiptPDF(
-  data: RegistrationData,
+  reg: RegistrationData,
   reference: string
 ): Promise<string> {
   const dir = path.join(process.cwd(), "data");
@@ -96,30 +97,31 @@ async function generateReceiptPDF(
     color: rgb(0, 0, 0),
   });
 
-  // ✅ PHOTO FIX
-  if (data.photo) {
-    try {
-      const imagePath = path.join(process.cwd(), "public", data.photo);
-      const imageBytes = fs.readFileSync(imagePath);
+ if (reg.photo) {
+  try {
+    const imagePath = path.join(process.cwd(), "public", reg.photo);
+    const imageBytes = fs.readFileSync(imagePath);
 
-      let image;
+    let image;
 
-      if (data.photo.endsWith(".png")) {
-        image = await pdfDoc.embedPng(imageBytes);
-      } else {
-        image = await pdfDoc.embedJpg(imageBytes);
-      }
+    if (reg.photo.endsWith(".png")) {
+      image = await pdfDoc.embedPng(imageBytes);
+    } else if (reg.photo.endsWith(".jpg") || reg.photo.endsWith(".jpeg")) {
+      image = await pdfDoc.embedJpg(imageBytes);
+    }
 
+    if (image) {
       page.drawImage(image, {
         x: 400,
         y: height - 180,
         width: 120,
         height: 120,
       });
-    } catch (err) {
-      console.log("❌ Image load error:", err);
     }
+  } catch (err) {
+    console.log("❌ Image load error:", err);
   }
+}
 
   // TEXT
   let y = height - 100;
@@ -135,18 +137,18 @@ async function generateReceiptPDF(
   };
 
   drawLine("Ref", reference);
-  drawLine("Student Name", data.fullName);
-  drawLine("Father Name", data.fatherName);
-  drawLine("Student Mobile", data.studentMobile);
-  drawLine("Parent Mobile", data.parentMobile);
-  drawLine("Email", data.email);
-  drawLine("DOB", data.dob);
-  drawLine("Qualification", data.qualification);
-  drawLine("City", data.city);
-  drawLine("Skill Interest", data.skillInterest);
-  drawLine("Has Laptop", data.hasLaptop);
-  drawLine("Experience", data.experience);
-  drawLine("Why Join", data.whyJoin);
+  drawLine("Student Name", reg.fullName);
+  drawLine("Father Name", reg.fatherName);
+  drawLine("Student Mobile", reg.studentMobile);
+  drawLine("Parent Mobile", reg.parentMobile);
+  drawLine("Email", reg.email);
+  drawLine("DOB", reg.dob);
+  drawLine("Qualification", reg.qualification);
+  drawLine("City", reg.city);
+  drawLine("Skill Interest", reg.skillInterest);
+  drawLine("Has Laptop", reg.hasLaptop);
+  drawLine("Experience", reg.experience);
+  drawLine("Why Join", reg.whyJoin);
 
   // FOOTER
   page.drawText("Thank you for registering with Techie Thrives!", {

@@ -60,8 +60,9 @@ export async function POST(req: NextRequest) {
     await saveRegistration(registration);
 
     // ✅ approval link
-    const approveLink = `https://localhost:3000/api/approve?ref=${reference}`;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
+const approveLink = `${BASE_URL}/api/approve?ref=${reference}`;
     // ✅ telegram message
     const message = `
 🆕 New Registration

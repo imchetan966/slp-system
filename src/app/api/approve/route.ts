@@ -64,10 +64,9 @@ export async function GET(req: NextRequest) {
 
   console.log("✅ APPROVED + DONE:", ref);
 
-  return NextResponse.json({
-    success: true,
-    message: `Approved ${ref}`,
-  });
+  return NextResponse.redirect(
+  `http://localhost:3000/success?ref=${ref}`
+);
 }
 
 // ✅ PDF FUNCTION

@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     await saveRegistration(registration);
 
     // ✅ approval link
-    const approveLink = `http://localhost:3000/api/approve?ref=${reference}`;
+    const approveLink = `https://techiethrive.com/slp/api/approve?ref=${reference}`;
 
     // ✅ telegram message
     const message = `

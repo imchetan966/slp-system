@@ -95,7 +95,10 @@ export default function RegistrationForm() {
       form.append('agreedToTerms', 'true');
       form.append('totalPayable', '399');
 
-      const res = await fetch('/slp/api/register', { method: 'POST', body: form });
+      const res = await fetch('https://slp-system.vercel.app/api/register', {
+        method: 'POST',
+        body: form,
+      });
       const data = await res.json();
 
       if (data.success) {

@@ -95,14 +95,14 @@ export default function RegistrationForm() {
       form.append('agreedToTerms', 'true');
       form.append('totalPayable', '399');
 
-      const res = await fetch('https://slp-system.vercel.app/api/register', {
+      const res = await fetch('/api/register', {
         method: 'POST',
         body: form,
       });
       const data = await res.json();
 
       if (data.success) {
-        router.push(`/thank-you?ref=${data.reference}`);
+        router.push(`https://techiethrive.com/thank-you`);
       } else {
         alert('Error: ' + (data.error || 'Unknown error'));
       }

@@ -1,43 +1,34 @@
-import fs from "fs";
-import path from "path";
+import { MongoClient } from "mongodb";
 
-const filePath = path.join(process.cwd(), "src/data/registrations.json");
+const uri = process.env.MONGODB_URI!;
+const client = new MongoClient(uri);
 
-export function saveRegistration(data: any) {
-  try {
-    let existing = [];
+const dbName = "slp";
+const collectionName = "registrations";
 
-    if (fs.existsSync(filePath)) {
-      const file = fs.readFileSync(filePath, "utf-8");
-      existing = JSON.parse(file || "[]");
-    }
-
-    existing.push(data);
-
-    fs.writeFileSync(filePath, JSON.stringify(existing, null, 2));
-  } catch (err) {
-    console.log("❌ DB ERROR:", err);
-  }
+async function getCollection() {
+  await client.connect();
+  const db = client.db(dbName);
+  return db.collection(collectionName);
 }
 
-export function getRegistrationByRef(ref: string) {
-  if (!fs.existsSync(filePath)) return null;
-
-  const file = fs.readFileSync(filePath, "utf-8");
-  const data = JSON.parse(file || "[]");
-
-  return data.find((item: any) => item.reference === ref);
+// ✅ SAVE
+export async function saveRegistration(data: any) {
+  const col = await getCollection();
+  await col.insertOne(data);
 }
 
-export function updateRegistrationStatus(ref: string, status: string) {
-  if (!fs.existsSync(filePath)) return;
+// ✅ GET
+export async function getRegistrationByRef(ref: string) {
+  const col = await getCollection();
+  return await col.findOne({ reference: ref });
+}
 
-  const file = fs.readFileSync(filePath, "utf-8");
-  const data = JSON.parse(file || "[]");
-
-  const updated = data.map((item: any) =>
-    item.reference === ref ? { ...item, status } : item
+// ✅ UPDATE
+export async function updateRegistrationStatus(ref: string, status: string) {
+  const col = await getCollection();
+  await col.updateOne(
+    { reference: ref },
+    { $set: { status } }
   );
-
-  fs.writeFileSync(filePath, JSON.stringify(updated, null, 2));
 }

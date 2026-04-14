@@ -33,15 +33,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: false, message: "No ref" });
   }
 
-  const data = getRegistrationByRef(ref) as RegistrationData;
+  const data = await getRegistrationByRef(ref) as RegistrationData;
 
   if (!data) {
     return NextResponse.json({ success: false, message: "Not found" });
   }
 
   // ✅ Update status
-  updateRegistrationStatus(ref, "approved");
-
+await updateRegistrationStatus(ref, "approved");
   // 📄 Generate PDF
   const pdfPath = await generateReceiptPDF(data, ref);
 

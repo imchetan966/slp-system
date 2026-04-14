@@ -74,7 +74,7 @@ async function generateReceiptPDF(
   reg: RegistrationData,
   reference: string
 ): Promise<string> {
-  const dir = path.join(process.cwd(), "data");
+  const dir = "/tmp";
 
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
@@ -99,14 +99,17 @@ async function generateReceiptPDF(
 
  if (reg.photo) {
   try {
-    const imagePath = path.join(process.cwd(), "public", reg.photo);
+    const imagePath = path.join("/tmp", reg.photo);
     const imageBytes = fs.readFileSync(imagePath);
 
     let image;
 
     if (reg.photo.endsWith(".png")) {
       image = await pdfDoc.embedPng(imageBytes);
-    } else if (reg.photo.endsWith(".jpg") || reg.photo.endsWith(".jpeg")) {
+    } else if (
+      reg.photo.endsWith(".jpg") ||
+      reg.photo.endsWith(".jpeg")
+    ) {
       image = await pdfDoc.embedJpg(imageBytes);
     }
 

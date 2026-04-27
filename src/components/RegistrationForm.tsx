@@ -248,7 +248,7 @@ export default function RegistrationForm() {
             </div>
             <div className={styles.statDiv} />
             <div className={styles.stat}>
-              <span className={styles.statNum}>₹399</span>
+              <span className={styles.statNum}>₹99</span>
               <span className={styles.statLabel}>Registration</span>
             </div>
           </div>
@@ -468,7 +468,7 @@ export default function RegistrationForm() {
                     <span className={styles.qrFallbackText}>Add qr-code.png to /public</span>
                   </div>
                 </div>
-                <p className={styles.qrCaption}>Scan with any UPI app · ₹399</p>
+                <p className={styles.qrCaption}>Scan with any UPI app · ₹99</p>
               </div>
             </div>
           </section>

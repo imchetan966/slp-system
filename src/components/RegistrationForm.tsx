@@ -431,7 +431,7 @@ export default function RegistrationForm() {
                   <p className={styles.feeBannerLabel}>Registration Fee</p>
                   <p className={styles.feeBannerSub}>One-time · Non-refundable</p>
                 </div>
-                <span className={styles.feeBannerAmount}>₹399</span>
+                <span className={styles.feeBannerAmount}>₹99</span>
               </div>
 
               {/* UPI */}
